@@ -230,6 +230,89 @@ This perspective reveals that the **amount of information lost** in the resoluti
 
 ---
 
+## Character Theory: Quantifying Information Loss
+
+Character theory transforms the impossibility from a qualitative statement ("you can't have all three") to a quantitative one ("you lose exactly this much information, in these specific modes").
+
+### The Character
+
+The character of a representation ρ: G → GL(V) is the function χ_ρ: G → ℂ defined by χ_ρ(g) = tr(ρ(g)). Characters are class functions (constant on conjugacy classes) and completely determine the representation up to isomorphism for finite groups over ℂ.
+
+The dimension of the G-fixed subspace is computed directly from the character:
+```
+dim(V^G) = ⟨χ, χ_trivial⟩ = (1/|G|) Σ_{g ∈ G} χ(g)
+```
+This is the **fraction of explanation that survives** the resolution. The rest — dim(V) - dim(V^G) — is the price of stability.
+
+### Per-Domain Computations
+
+**S₃ acting on ℝ³ (biology, 3 synonymous codons like Ile: ATT, ATC, ATA)**
+
+The character table of S₃ has three irreducible representations:
+- Trivial (dim 1): the mean codon frequency — **this is the resolution**
+- Sign (dim 1): the parity of the distribution — **lost**
+- Standard (dim 2): the two degrees of freedom distinguishing individual codons — **lost**
+
+The natural representation on ℝ³ decomposes as trivial ⊕ standard. So dim(V^G) = 1 out of dim(V) = 3. The resolution preserves exactly **1/3 of the information**. Character theory predicts: for any amino acid with 3 synonymous codons, reporting the codon usage table (the orbit average) retains one dimension and loses two. You can stably report "what fraction of codons are used" but not "which specific codon this organism uses at this position."
+
+More generally, for an amino acid with degeneracy k, the natural representation of S_k on ℝ^k decomposes as trivial (dim 1) ⊕ standard (dim k-1). The resolution preserves 1/k of the information. The "severity" of the impossibility scales linearly with degeneracy — exactly the dose-response the experiment measures.
+
+**Z₂^{|V|-1} acting on edge configurations (gauge theory)**
+
+For Z₂ on a single link (ℝ¹), the representation decomposes as trivial ⊕ sign. The holonomy keeps the trivial part. On a full lattice with 2N² links, the gauge group Z₂^{N²-1} acts, and:
+```
+dim(V^G) = 2N² - (N² - 1) = N² + 1
+```
+So (N²+1)/(2N²) ≈ 1/2 of link-level information is gauge-invariant. Character theory gives the exact count of independent gauge-invariant observables — the Wilson loops and their products. This is a classical result in lattice gauge theory, but the framework derives it from the general principle.
+
+**S_Ω acting on ℝ^Ω (statistical mechanics)**
+
+The natural representation of S_Ω on ℝ^Ω decomposes as trivial (dim 1) ⊕ standard (dim Ω-1). The microcanonical average keeps only the trivial component — **1/Ω of the information**. As Ω grows (thermodynamic limit, Ω ~ 10²³), essentially all microstate-level information is lost. This is a character-theoretic derivation of why thermodynamics is "lossy" — it projects onto the trivial representation of an astronomically large symmetric group.
+
+### Orthogonality Relations and Query-Relative Impossibility
+
+The character orthogonality relations:
+```
+⟨χ_ρ, χ_σ⟩ = (1/|G|) Σ_{g ∈ G} χ_ρ(g) χ_σ(g)* = δ_{ρσ}
+```
+imply that information in different irreducible components is **perfectly separated**. You cannot recover information about one representation from observations of another. This gives a sharp formulation of the query-relative impossibility:
+
+> A query q about the system is stably answerable **if and only if** q lives in V^G (the trivial representation).
+
+The character inner product provides a quantitative test: project q onto each irreducible component. If q has nonzero projection onto any non-trivial representation, q is unstable. The **magnitude** of the non-trivial projection quantifies *how unstable* — a refinement the qualitative impossibility theorem doesn't give.
+
+### Fourier Analysis on Groups
+
+For abelian groups, character theory IS Fourier analysis. The characters are the Fourier basis functions. The G-invariant resolution is projection onto the zero-frequency (DC) component.
+
+This makes the crystallography instance particularly clean: the Patterson map (autocorrelation) is literally the DC component of the power spectrum. Extracting the autocorrelation IS projecting onto the trivial character of the phase group. The Fourier analysis that crystallographers have used since Patterson's 1934 paper is character theory applied to an abelian phase group.
+
+### The Molien Series (Polynomial Invariants)
+
+For domains where explanations are polynomial functions of the configuration, the Molien series counts the number of independent G-invariant polynomials of each degree:
+```
+M(t) = (1/|G|) Σ_{g ∈ G} 1/det(I - t·ρ(g))
+```
+This gives a generating function for the "resolution space" at each level of complexity. The degree-1 term gives dim(V^G) (linear invariants). Higher-degree terms count nonlinear invariants that might serve as alternative resolutions. For gauge theory, the Molien series for Z₂ on the link configuration space generates exactly the Wilson loop polynomials.
+
+### Quantitative Predictions Per Domain
+
+| Domain | Group | dim(V) | dim(V^G) | Fraction surviving | Irreducible decomposition |
+|--------|-------|--------|----------|-------------------|--------------------------|
+| Biology (deg=2) | S₂ | 2 | 1 | 1/2 | trivial ⊕ sign |
+| Biology (deg=3) | S₃ | 3 | 1 | 1/3 | trivial ⊕ standard |
+| Biology (deg=4) | S₄ | 4 | 1 | 1/4 | trivial ⊕ standard |
+| Biology (deg=6) | S₆ | 6 | 1 | 1/6 | trivial ⊕ standard |
+| Gauge (1 link) | Z₂ | 1 | 0† | 0 | sign only |
+| Gauge (N×N lattice) | Z₂^{N²-1} | 2N² | N²+1 | ~1/2 | complex decomposition |
+| Stat mech (Ω states) | S_Ω | Ω | 1 | 1/Ω → 0 | trivial ⊕ standard |
+
+† For a single link variable with no plaquette, there is no gauge-invariant content. On a lattice with cycles, plaquettes provide the invariant subspace.
+
+The column "Fraction surviving" gives a domain-specific, quantitative prediction: in biology, the resolution loses (k-1)/k of the codon information where k is the degeneracy; in statistical mechanics, the resolution loses (Ω-1)/Ω → 100% as Ω → ∞. These predictions are falsifiable and domain-specific — exactly what the Devil's Advocate demanded.
+
+---
+
 ## Summary
 
 The explanation impossibility is logically simple (4 steps, group-free). The resolution theory is where the mathematics lives. The group G and its representation on the explanation space H determine:
